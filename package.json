@@ -1,8 +1,8 @@
 {
   "name": "uu-auto-login",
-  "displayName": "Uu auto login",
-  "version": "0.0.1",
-  "description": "Auto login voor uu",
+  "displayName": "UU auto login",
+  "version": "0.1",
+  "description": "Auto login uu.",
   "author": "Doppie22",
   "scripts": {
     "dev": "plasmo dev",
@@ -10,8 +10,6 @@
     "test": "plasmo test"
   },
   "dependencies": {
-    "@plasmohq/messaging": "^0.6.0",
-    "@plasmohq/storage": "^1.9.0",
     "crypto-js": "^4.2.0",
     "lodash": "^4.17.21",
     "plasmo": "0.84.0",
