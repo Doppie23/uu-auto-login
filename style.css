@@ -3,5 +3,10 @@
 @tailwind utilities;
 
 body {
-  width: 10rem;
+  width: 20rem;
+  height: 30rem;
+}
+
+#__plasmo {
+  height: 100%;
 }

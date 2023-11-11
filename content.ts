@@ -18,13 +18,13 @@ export const config: PlasmoCSConfig = {
 };
 
 // login
-waitForElm<HTMLFormElement>("#IDPLogin").then((form) => {
+waitForElm<HTMLFormElement>("#IDPLogin").then(async (form) => {
   form.querySelector<HTMLInputElement>("#Ecom_User_ID").value = userName;
   form.querySelector<HTMLInputElement>("#Ecom_Password").value = passWord;
   form.submit();
 });
 
-// 2fa code
+// // 2fa code
 waitForElm<HTMLInputElement>("#nffc").then((e) => {
   e.value = generateTOTP({ key: tfaSecret });
 
