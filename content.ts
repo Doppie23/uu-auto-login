@@ -1,5 +1,6 @@
 import type { PlasmoCSConfig } from "plasmo";
 import generateTOTP from "~utils/generateTfaCode";
+import waitForElm from "~utils/waitForElem";
 
 export {};
 
@@ -8,22 +9,23 @@ const passWord = process.env.PLASMO_PUBLIC_PASSWORD;
 const tfaSecret = process.env.PLASMO_PUBLIC_TFASECRET;
 
 export const config: PlasmoCSConfig = {
-  matches: ["https://login.uu.nl/*", "http://login.uu.nl/*"],
+  matches: [
+    "https://login.uu.nl/*",
+    "http://login.uu.nl/*",
+    "https://mfa.uu.nl/*",
+    "http://mfa.uu.nl/*",
+  ],
 };
 
-waitForElm("#Ecom_User_ID").then((e: HTMLInputElement) => {
-  e.value = userName;
-});
-
-waitForElm("#Ecom_Password").then(async (e: HTMLInputElement) => {
-  e.value = passWord;
-
-  const button = document.getElementById("loginButton2") as HTMLButtonElement;
-  button.click();
+// login
+waitForElm<HTMLFormElement>("#IDPLogin").then((form) => {
+  form.querySelector<HTMLInputElement>("#Ecom_User_ID").value = userName;
+  form.querySelector<HTMLInputElement>("#Ecom_Password").value = passWord;
+  form.submit();
 });
 
 // 2fa code
-waitForElm("#nffc").then((e: HTMLInputElement) => {
+waitForElm<HTMLInputElement>("#nffc").then((e) => {
   e.value = generateTOTP({ key: tfaSecret });
 
   const button = document.getElementsByName(
@@ -31,23 +33,3 @@ waitForElm("#nffc").then((e: HTMLInputElement) => {
   )[0] as HTMLButtonElement;
   button.click();
 });
-
-function waitForElm(selector) {
-  return new Promise((resolve) => {
-    if (document.querySelector(selector)) {
-      return resolve(document.querySelector(selector));
-    }
-
-    const observer = new MutationObserver((mutations) => {
-      if (document.querySelector(selector)) {
-        resolve(document.querySelector(selector));
-        observer.disconnect();
-      }
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
-  });
-}
