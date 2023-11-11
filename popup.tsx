@@ -1,5 +1,7 @@
-import { useEffect, type FormEvent, useRef } from "react";
+import { useEffect, type FormEvent, useRef, useState } from "react";
+import { SecureStorage } from "@plasmohq/storage/secure";
 import "./style.css";
+import { sendToBackground } from "@plasmohq/messaging";
 
 interface formTarget extends HTMLFormElement {
   naam: {
@@ -14,14 +16,17 @@ interface formTarget extends HTMLFormElement {
 }
 
 function IndexPopup() {
+  const [buttonText, setButtonText] = useState("Save");
   const naamRef = useRef<HTMLInputElement>();
 
   useEffect(() => {
-    chrome.storage.local.get("naam").then((e) => {
-      console.log(e.naam);
-      if (e.naam) {
-        naamRef.current.value = e.naam;
-      }
+    sendToBackground({
+      name: "get",
+      body: {
+        key: "naam",
+      },
+    }).then((e) => {
+      if (e) naamRef.current.value = e;
     });
   }, []);
 
@@ -35,9 +40,15 @@ function IndexPopup() {
       secret: target.secret.value,
     };
 
-    for (const [key, value] of Object.entries(formData)) {
-      chrome.storage.local.set({ [key]: value });
-    }
+    sendToBackground({
+      name: "set",
+      body: formData,
+    });
+
+    setButtonText("Saving...");
+    setTimeout(() => {
+      setButtonText("Save");
+    }, 1000);
   };
 
   return (
@@ -77,7 +88,7 @@ function IndexPopup() {
             />
           </div>
           <button className="w-16 rounded border bg-white p-1 hover:bg-gray-100">
-            Save
+            {buttonText}
           </button>
         </form>
       </div>
