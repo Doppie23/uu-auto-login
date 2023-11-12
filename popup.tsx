@@ -1,0 +1,109 @@
+import { useEffect, type FormEvent, useRef, useState } from "react";
+import "./style.css";
+
+interface formTarget extends HTMLFormElement {
+  username: {
+    value: string;
+  };
+  password: {
+    value: string;
+  };
+  secret: {
+    value: string;
+  };
+}
+
+function IndexPopup() {
+  const [buttonText, setButtonText] = useState("Save");
+  const [clearedDataText, setClearedDataText] = useState("");
+  const naamRef = useRef<HTMLInputElement>();
+
+  useEffect(() => {
+    chrome.storage.local.get("username", (e: storageObject) => {
+      if (e.username) naamRef.current.value = e.username;
+    });
+  }, []);
+
+  const onSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    const target = e.target as formTarget;
+
+    const formData: storageObject = {
+      username: target.username.value,
+      password: target.password.value,
+      secret: target.secret.value,
+    };
+
+    for (const [key, value] of Object.entries(formData)) {
+      chrome.storage.local.set({ [key]: value });
+    }
+
+    setButtonText("Saving...");
+    setTimeout(() => {
+      setButtonText("Save");
+    }, 200);
+  };
+
+  return (
+    <div className="relative flex h-full items-center justify-center bg-yellow-400">
+      <div className=" w-7/12">
+        <h1 className="mb-4 text-center text-3xl font-semibold">UU Login</h1>
+        <form
+          onSubmit={onSubmit}
+          className="flex flex-col items-center space-y-2"
+        >
+          <div className="w-full">
+            <div>Naam:</div>
+            <input
+              ref={naamRef}
+              required
+              type="text"
+              name="username"
+              className="w-full rounded border px-2 py-1"
+            />
+          </div>
+          <div className="w-full">
+            <div>Wachtwoord:</div>
+            <input
+              required
+              type="password"
+              name="password"
+              className="w-full rounded border px-2 py-1"
+            />
+          </div>
+          <div className="w-full">
+            <div>2FA secret:</div>
+            <input
+              required
+              type="text"
+              autoComplete="off"
+              name="secret"
+              className="w-full rounded border px-2 py-1"
+            />
+          </div>
+          <button className="w-16 rounded border bg-white p-1 hover:bg-neutral-100">
+            {buttonText}
+          </button>
+        </form>
+      </div>
+      <div className="absolute bottom-2 text-center text-neutral-700 hover:text-neutral-500">
+        {clearedDataText && (
+          <div className="text-xs font-semibold">{clearedDataText}</div>
+        )}
+        <button
+          onClick={() => {
+            chrome.storage.local.clear();
+            setClearedDataText("Data cleared!");
+            setTimeout(() => {
+              setClearedDataText("");
+            }, 1000);
+          }}
+        >
+          Clear all data
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default IndexPopup;

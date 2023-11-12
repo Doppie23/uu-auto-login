@@ -4,10 +4,6 @@ import waitForElm from "~utils/waitForElem";
 
 export {};
 
-const userName = process.env.PLASMO_PUBLIC_USERNAME;
-const passWord = process.env.PLASMO_PUBLIC_PASSWORD;
-const tfaSecret = process.env.PLASMO_PUBLIC_TFASECRET;
-
 export const config: PlasmoCSConfig = {
   matches: [
     "https://login.uu.nl/*",
@@ -18,15 +14,32 @@ export const config: PlasmoCSConfig = {
 };
 
 // login
-waitForElm<HTMLFormElement>("#IDPLogin").then((form) => {
-  form.querySelector<HTMLInputElement>("#Ecom_User_ID").value = userName;
-  form.querySelector<HTMLInputElement>("#Ecom_Password").value = passWord;
-  form.submit();
+waitForElm<HTMLFormElement>("#IDPLogin").then(async (form) => {
+  const username = (await chrome.storage.local.get(
+    "username",
+  )) as storageObject;
+  const password = (await chrome.storage.local.get(
+    "password",
+  )) as storageObject;
+
+  if (!username.username || !password.password) {
+    console.log("geen naam of wachtwoord");
+    return;
+  }
+
+  form.querySelector<HTMLInputElement>("#Ecom_User_ID").value =
+    username.username;
+  form.querySelector<HTMLInputElement>("#Ecom_Password").value =
+    password.password;
+  document.querySelector<HTMLButtonElement>("#loginButton2").click();
 });
 
 // 2fa code
-waitForElm<HTMLInputElement>("#nffc").then((e) => {
-  e.value = generateTOTP({ key: tfaSecret });
+waitForElm<HTMLInputElement>("#nffc").then(async (e) => {
+  const secret = (await chrome.storage.local.get("secret")) as storageObject;
+  if (!secret.secret) return;
+
+  e.value = generateTOTP({ key: secret.secret });
 
   const button = document.getElementsByName(
     "loginButton2",
