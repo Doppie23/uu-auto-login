@@ -2,6 +2,7 @@ import { useEffect, type FormEvent, useRef, useState } from "react";
 import { secureLocalStorage } from "~utils/localStorage";
 import VisibleIcon from "~components/icons/VisibleIcon";
 import OffVisibleIcon from "~components/icons/OffVisibleIcon";
+import uuLogo from "data-base64:~assets/uulogo.png";
 import "./style.css";
 
 interface formTarget extends HTMLFormElement {
@@ -20,11 +21,11 @@ function IndexPopup() {
   const [buttonText, setButtonText] = useState("Save");
   const [showPassword, setShowPassword] = useState(false);
   const [clearedDataText, setClearedDataText] = useState("");
-  const naamRef = useRef<HTMLInputElement>();
+  const usernameRef = useRef<HTMLInputElement>();
 
   useEffect(() => {
     secureLocalStorage.getItem("username").then((e) => {
-      if (e) naamRef.current.value = e;
+      if (e) usernameRef.current.value = e;
     });
   }, []);
 
@@ -51,6 +52,7 @@ function IndexPopup() {
 
   return (
     <div className="relative flex h-full items-center justify-center bg-yellow-400">
+      <img src={uuLogo} alt="Logo" className="absolute top-6 h-20 w-20" />
       <div className=" w-7/12">
         <h1 className="mb-4 text-center text-3xl font-semibold">UU Login</h1>
         <form
@@ -60,7 +62,7 @@ function IndexPopup() {
           <div className="w-full">
             <div>Naam:</div>
             <input
-              ref={naamRef}
+              ref={usernameRef}
               required
               type="text"
               name="username"
@@ -97,23 +99,25 @@ function IndexPopup() {
               className="w-full rounded border px-2 py-1"
             />
           </div>
-          <button className="w-16 rounded border bg-white p-1 hover:bg-neutral-100">
+          <button className="w-16 rounded border bg-white p-1 hover:bg-neutral-100 active:bg-neutral-200">
             {buttonText}
           </button>
         </form>
       </div>
-      <div className="absolute bottom-2 text-center text-neutral-700 hover:text-neutral-500">
+      <div className="absolute bottom-2 text-center text-neutral-700 ">
         {clearedDataText && (
           <div className="text-xs font-semibold">{clearedDataText}</div>
         )}
         <button
           onClick={() => {
             secureLocalStorage.clear();
+            usernameRef.current.value = "";
             setClearedDataText("Data cleared!");
             setTimeout(() => {
               setClearedDataText("");
             }, 1000);
           }}
+          className="hover:text-neutral-500 hover:underline"
         >
           Clear all data
         </button>
