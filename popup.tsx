@@ -54,23 +54,25 @@ function IndexPopup() {
     <div className="relative flex h-full items-center justify-center bg-yellow-400">
       <img src={uuLogo} alt="Logo" className="absolute top-6 h-20 w-20" />
       <div className=" w-7/12">
-        <h1 className="mb-4 text-center text-3xl font-semibold">UU Login</h1>
+        <h1 className="mb-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          UU Login
+        </h1>
         <form
           onSubmit={onSubmit}
           className="flex flex-col items-center space-y-2"
         >
           <div className="w-full">
-            <div>Naam:</div>
+            <label>Naam:</label>
             <input
               ref={usernameRef}
               required
               type="text"
               name="username"
-              className="w-full rounded border px-2 py-1"
+              className="w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black"
             />
           </div>
           <div className="w-full">
-            <div>Wachtwoord:</div>
+            <label>Wachtwoord:</label>
             <div className="relative w-full ">
               <button
                 onClick={() => {
@@ -85,21 +87,21 @@ function IndexPopup() {
                 required
                 type={showPassword ? "text" : "password"}
                 name="password"
-                className="w-full rounded border px-2 py-1"
+                className="w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black"
               />
             </div>
           </div>
           <div className="w-full">
-            <div>2FA secret:</div>
+            <label>2FA secret:</label>
             <input
               required
               type="text"
               autoComplete="off"
               name="secret"
-              className="w-full rounded border px-2 py-1"
+              className="w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black"
             />
           </div>
-          <button className="w-16 rounded border bg-white p-1 hover:bg-neutral-100 active:bg-neutral-200">
+          <button className="w-16 rounded-md border bg-white p-1 shadow-sm hover:bg-neutral-100 active:bg-neutral-200">
             {buttonText}
           </button>
         </form>
