@@ -1,6 +1,8 @@
 import { useEffect, type FormEvent, useRef, useState } from "react";
-import "./style.css";
 import { secureLocalStorage } from "~utils/localStorage";
+import VisibleIcon from "~components/icons/VisibleIcon";
+import OffVisibleIcon from "~components/icons/OffVisibleIcon";
+import "./style.css";
 
 interface formTarget extends HTMLFormElement {
   username: {
@@ -16,6 +18,7 @@ interface formTarget extends HTMLFormElement {
 
 function IndexPopup() {
   const [buttonText, setButtonText] = useState("Save");
+  const [showPassword, setShowPassword] = useState(false);
   const [clearedDataText, setClearedDataText] = useState("");
   const naamRef = useRef<HTMLInputElement>();
 
@@ -66,12 +69,23 @@ function IndexPopup() {
           </div>
           <div className="w-full">
             <div>Wachtwoord:</div>
-            <input
-              required
-              type="password"
-              name="password"
-              className="w-full rounded border px-2 py-1"
-            />
+            <div className="relative w-full ">
+              <button
+                onClick={() => {
+                  setShowPassword(!showPassword);
+                }}
+                className="center_eye absolute right-2 h-4 w-4"
+                type="button"
+              >
+                {showPassword ? <OffVisibleIcon /> : <VisibleIcon />}
+              </button>
+              <input
+                required
+                type={showPassword ? "text" : "password"}
+                name="password"
+                className="w-full rounded border px-2 py-1"
+              />
+            </div>
           </div>
           <div className="w-full">
             <div>2FA secret:</div>
