@@ -1,5 +1,6 @@
 import { useEffect, type FormEvent, useRef, useState } from "react";
 import "./style.css";
+import { secureLocalStorage } from "~utils/localStorage";
 
 interface formTarget extends HTMLFormElement {
   username: {
@@ -19,8 +20,8 @@ function IndexPopup() {
   const naamRef = useRef<HTMLInputElement>();
 
   useEffect(() => {
-    chrome.storage.local.get("username", (e: storageObject) => {
-      if (e.username) naamRef.current.value = e.username;
+    secureLocalStorage.getItem("username").then((e) => {
+      if (e) naamRef.current.value = e;
     });
   }, []);
 
@@ -34,8 +35,9 @@ function IndexPopup() {
       secret: target.secret.value,
     };
 
-    for (const [key, value] of Object.entries(formData)) {
-      chrome.storage.local.set({ [key]: value });
+    for (const key of Object.keys(formData) as storageKey[]) {
+      const value = formData[key];
+      secureLocalStorage.setItem(key, value);
     }
 
     setButtonText("Saving...");
@@ -92,7 +94,7 @@ function IndexPopup() {
         )}
         <button
           onClick={() => {
-            chrome.storage.local.clear();
+            secureLocalStorage.clear();
             setClearedDataText("Data cleared!");
             setTimeout(() => {
               setClearedDataText("");

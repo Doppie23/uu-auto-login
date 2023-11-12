@@ -1,5 +1,6 @@
 import type { PlasmoCSConfig } from "plasmo";
 import generateTOTP from "~utils/generateTfaCode";
+import { secureLocalStorage } from "~utils/localStorage";
 import waitForElm from "~utils/waitForElem";
 
 export {};
@@ -15,31 +16,26 @@ export const config: PlasmoCSConfig = {
 
 // login
 waitForElm<HTMLFormElement>("#IDPLogin").then(async (form) => {
-  const username = (await chrome.storage.local.get(
-    "username",
-  )) as storageObject;
-  const password = (await chrome.storage.local.get(
-    "password",
-  )) as storageObject;
+  const username = await secureLocalStorage.getItem("username");
+  const password = await secureLocalStorage.getItem("password");
 
-  if (!username.username || !password.password) {
+  if (!username || !password) {
     console.log("geen naam of wachtwoord");
     return;
   }
 
-  form.querySelector<HTMLInputElement>("#Ecom_User_ID").value =
-    username.username;
-  form.querySelector<HTMLInputElement>("#Ecom_Password").value =
-    password.password;
+  form.querySelector<HTMLInputElement>("#Ecom_User_ID").value = username;
+  form.querySelector<HTMLInputElement>("#Ecom_Password").value = password;
   document.querySelector<HTMLButtonElement>("#loginButton2").click();
 });
 
 // 2fa code
 waitForElm<HTMLInputElement>("#nffc").then(async (e) => {
-  const secret = (await chrome.storage.local.get("secret")) as storageObject;
-  if (!secret.secret) return;
+  const secret = await secureLocalStorage.getItem("secret");
 
-  e.value = generateTOTP({ key: secret.secret });
+  if (!secret) return;
+
+  e.value = generateTOTP({ key: secret });
 
   const button = document.getElementsByName(
     "loginButton2",

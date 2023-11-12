@@ -1,5 +1,5 @@
 type storageKey = "username" | "password" | "secret";
 
 type storageObject = {
-  [key in storageKey]?: string;
+  [key in storageKey]: string;
 };
