@@ -10,8 +10,3 @@ body {
 #__plasmo {
   height: 100%;
 }
-
-.center_eye {
-  top: 50%;
-  transform: translateY(-50%);
-}

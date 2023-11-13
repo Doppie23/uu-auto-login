@@ -44,7 +44,7 @@ function IndexPopup() {
       secureLocalStorage.setItem(key, value);
     }
 
-    setButtonText("Saving...");
+    setButtonText("Saved!");
     setTimeout(() => {
       setButtonText("Save");
     }, 200);
@@ -74,21 +74,23 @@ function IndexPopup() {
           <div className="w-full">
             <label>Wachtwoord:</label>
             <div className="relative w-full ">
-              <button
-                onClick={() => {
-                  setShowPassword(!showPassword);
-                }}
-                className="center_eye absolute right-2 h-4 w-4"
-                type="button"
-              >
-                {showPassword ? <OffVisibleIcon /> : <VisibleIcon />}
-              </button>
               <input
                 required
                 type={showPassword ? "text" : "password"}
                 name="password"
                 className="w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black"
               />
+              <button
+                onClick={() => {
+                  setShowPassword(!showPassword);
+                }}
+                className="absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2"
+                type="button"
+              >
+                <div className="fill-neutral-500">
+                  {showPassword ? <OffVisibleIcon /> : <VisibleIcon />}
+                </div>
+              </button>
             </div>
           </div>
           <div className="w-full">
