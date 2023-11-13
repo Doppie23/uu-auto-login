@@ -20,12 +20,16 @@ interface formTarget extends HTMLFormElement {
 function IndexPopup() {
   const [buttonText, setButtonText] = useState("Save");
   const [showPassword, setShowPassword] = useState(false);
+  const [isTfaSecretSet, setIsTfaSecretSet] = useState(false);
   const [clearedDataText, setClearedDataText] = useState("");
   const usernameRef = useRef<HTMLInputElement>();
 
   useEffect(() => {
     secureLocalStorage.getItem("username").then((e) => {
       if (e) usernameRef.current.value = e;
+    });
+    secureLocalStorage.getItem("secret").then((e) => {
+      if (e) setIsTfaSecretSet(true);
     });
   }, []);
 
@@ -36,12 +40,12 @@ function IndexPopup() {
     const formData: storageObject = {
       username: target.username.value,
       password: target.password.value,
-      secret: target.secret.value,
+      secret: isTfaSecretSet ? target.secret.value : undefined,
     };
 
     for (const key of Object.keys(formData) as storageKey[]) {
       const value = formData[key];
-      secureLocalStorage.setItem(key, value);
+      if (value) secureLocalStorage.setItem(key, value);
     }
 
     setButtonText("Saved!");
@@ -62,7 +66,7 @@ function IndexPopup() {
           className="flex flex-col items-center space-y-2"
         >
           <div className="w-full">
-            <label>Naam:</label>
+            <label>Name:</label>
             <input
               ref={usernameRef}
               required
@@ -72,7 +76,7 @@ function IndexPopup() {
             />
           </div>
           <div className="w-full">
-            <label>Wachtwoord:</label>
+            <label>Password:</label>
             <div className="relative w-full ">
               <input
                 required
@@ -87,28 +91,36 @@ function IndexPopup() {
                 className="absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2"
                 type="button"
               >
-                <div className="fill-neutral-500">
+                <div className="fill-zinc-500">
                   {showPassword ? <OffVisibleIcon /> : <VisibleIcon />}
                 </div>
               </button>
             </div>
           </div>
           <div className="w-full">
-            <label>2FA secret:</label>
+            <label>
+              2FA secret:
+              {isTfaSecretSet && (
+                <span className="text-[0.6rem] text-zinc-500">
+                  {" "}
+                  (Not required, already set)
+                </span>
+              )}
+            </label>
             <input
-              required
+              required={!isTfaSecretSet}
               type="text"
               autoComplete="off"
               name="secret"
               className="w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black"
             />
           </div>
-          <button className="w-16 rounded-md border bg-white p-1 shadow-sm hover:bg-neutral-100 active:bg-neutral-200">
+          <button className="w-16 rounded-md border bg-white p-1 shadow-sm hover:bg-zinc-100 active:bg-zinc-200">
             {buttonText}
           </button>
         </form>
       </div>
-      <div className="absolute bottom-2 text-center text-neutral-700 ">
+      <div className="absolute bottom-2 text-center text-zinc-500 ">
         {clearedDataText && (
           <div className="text-xs font-semibold">{clearedDataText}</div>
         )}
@@ -116,12 +128,13 @@ function IndexPopup() {
           onClick={() => {
             secureLocalStorage.clear();
             usernameRef.current.value = "";
+            setIsTfaSecretSet(false);
             setClearedDataText("Data cleared!");
             setTimeout(() => {
               setClearedDataText("");
             }, 1000);
           }}
-          className="hover:text-neutral-500 hover:underline"
+          className="hover:text-zinc-700 hover:underline"
         >
           Clear all data
         </button>
