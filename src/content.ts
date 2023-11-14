@@ -28,15 +28,6 @@ waitForElm<HTMLFormElement>("#IDPLogin").then(async (form) => {
   usernameInput.value = username;
   form.querySelector<HTMLInputElement>("#Ecom_Password").value = password;
   document.querySelector<HTMLButtonElement>("#loginButton2").click();
-
-  // dit is nodig want site zet value standaard op "" na laden
-  // we hebben dus een race condition tussen mijn code en de site zelf
-  // of ik submit eerst of de site veranderd mijn waarde van usernameInput naar ""
-  // voor nu is de timeout een prima oplossing
-  setTimeout(() => {
-    usernameInput.value = username;
-    document.querySelector<HTMLButtonElement>("#loginButton2").click();
-  }, 50);
 });
 
 // 2fa code
