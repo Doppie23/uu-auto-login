@@ -75,6 +75,10 @@ export class SecureLocalStorage {
     key: string,
   ): Promise<string | object | number | boolean | null> {
     let parsedKey = KEY_PREFIX + key;
+    if (!this._localStorageItems.parsedKey) {
+      const items = await getAllLocalStorageItems();
+      this._localStorageItems = items;
+    }
     return this._localStorageItems[parsedKey] || null;
   }
 

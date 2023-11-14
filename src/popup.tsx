@@ -40,7 +40,7 @@ function IndexPopup() {
     const formData: storageObject = {
       username: target.username.value,
       password: target.password.value,
-      secret: isTfaSecretSet ? target.secret.value : undefined,
+      secret: target.secret.value == "" ? undefined : target.secret.value,
     };
 
     for (const key of Object.keys(formData) as storageKey[]) {
