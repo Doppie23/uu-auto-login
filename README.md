@@ -20,13 +20,13 @@ After you got the secret you can use the QR code to add the 2fa code to Google A
 
 ### Chrome
 
-- Download the Chrome version from the Releases section.
+- Download the Chrome version from the Releases section and unzip it.
 - Enable developer mode in on the Chrome extensions page ([chrome://extensions/](chrome://extensions/)).
 - Choose "Load unpacked" and select the "chrome-mv3-prod" folder in `./build`.
 
 ### Firefox
 
-- Download the Firefox version from the Releases section.
+- Download the Firefox version from the Releases section and unzip it.
 - Go to the Firefox add-on page ([about:addons](about:addons)).
 - Click on the cog icon and select 'Install add-on from file'
 - Select the downloaded file.
