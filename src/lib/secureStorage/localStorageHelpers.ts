@@ -1,3 +1,4 @@
+import { browserNamespace } from "~types/browser";
 import { type LocalStorageItem } from "./coreTypes";
 import EncryptionService from "./encryption";
 import { getSecurePrefix } from "./utils";
@@ -11,7 +12,7 @@ const KEY_PREFIX = getSecurePrefix();
 const getAllLocalStorageItems = async () => {
   const localStorageItems: LocalStorageItem = {};
   const encrypt = new EncryptionService();
-  const e = await chrome.storage.local.get();
+  const e = await browserNamespace.storage.local.get();
   for (const [key, value] of Object.entries(e)) {
     if (key.startsWith(KEY_PREFIX)) {
       let keyType = key.replace(KEY_PREFIX, "")[0];

@@ -1,6 +1,7 @@
-// gestolen van https://github.com/sushinpv/react-secure-storage/tree/master
-// aangepast om te werken met chrome.storage.local
+// Code from https://github.com/sushinpv/react-secure-storage/tree/master
+// Changed to work with the extension storage api
 
+import { browserNamespace } from "~types/browser";
 import { type LocalStorageItem } from "./coreTypes";
 import EncryptionService from "./encryption";
 import getAllLocalStorageItems from "./localStorageHelpers";
@@ -61,7 +62,7 @@ export class SecureLocalStorage {
     let parsedKey = KEY_PREFIX + key;
     if (key != null) this._localStorageItems[parsedKey] = value;
     const encrypt = new EncryptionService();
-    chrome.storage.local.set({
+    browserNamespace.storage.local.set({
       [parsedKeyLocal]: encrypt.encrypt(parsedValue),
     });
   }
@@ -92,7 +93,7 @@ export class SecureLocalStorage {
     let parsedKeyLocal = getLocalKey(key, value);
     if (this._localStorageItems[parsedKey] !== undefined)
       delete this._localStorageItems[parsedKey];
-    chrome.storage.local.remove(parsedKeyLocal);
+    browserNamespace.storage.local.remove(parsedKeyLocal);
   }
 
   /**
@@ -100,7 +101,7 @@ export class SecureLocalStorage {
    */
   clear() {
     this._localStorageItems = {};
-    chrome.storage.local.clear();
+    browserNamespace.storage.local.clear();
   }
 }
 
