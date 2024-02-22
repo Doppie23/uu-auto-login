@@ -1,5 +1,5 @@
 import type { PlasmoCSConfig } from "plasmo";
-import generateTOTP from "~utils/generateTfaCode";
+import generateTOTP from "~utils/tfa/generateTfaCode";
 import { secureLocalStorage } from "~utils/localStorage";
 import waitForElm from "~utils/waitForElem";
 
